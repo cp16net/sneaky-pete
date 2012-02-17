@@ -264,6 +264,7 @@ void MySqlAppStatus::set_status(MySqlAppStatus::Status status) {
         stmt->set_int(3, (int)state);
         stmt->set_string(4, description);
     } else {
+        NOVA_LOG_INFO("Updating new Guest status row in the db.");
         stmt = nova_db->prepare_statement(
             "UPDATE guest_status "
             "SET state_description=?, state=?, updated_at=? "
@@ -275,6 +276,7 @@ void MySqlAppStatus::set_status(MySqlAppStatus::Status status) {
     }
     MySqlResultSetPtr result = stmt->execute(0);
     this->status = optional<int>(status);
+    NOVA_LOG_DEBUG2("finished updating the status in the db with status of (%s)", description);
 }
 
 const char * MySqlAppStatus::status_name(MySqlAppStatus::Status status) {
