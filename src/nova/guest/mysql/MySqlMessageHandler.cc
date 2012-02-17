@@ -249,7 +249,7 @@ MySqlAppMessageHandler::~MySqlAppMessageHandler() {
 }
 
 JsonDataPtr MySqlAppMessageHandler::handle_message(const GuestInput & input) {
-    NOVA_LOG_INFO2("Before handling the message whats the status? (%s)", status.get_current_status_string());
+    NOVA_LOG_INFO2("Before handling the message whats the status? (%s)", status->get_current_status_string());
     if (input.method_name == "prepare") {
         NOVA_LOG_INFO("Calling prepare...");
         MySqlAppPtr app = this->create_mysql_app();
@@ -258,13 +258,13 @@ JsonDataPtr MySqlAppMessageHandler::handle_message(const GuestInput & input) {
         // The argument signature is the same as create_database so just
         // forward the method.
         NOVA_LOG_INFO("Creating initial databases following successful prepare");
-        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status.get_current_status_string());
+        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status->get_current_status_string());
         return _create_database(MySqlMessageHandler::sql_admin(), input.args);
     } else if (input.method_name == "restart") {
         NOVA_LOG_INFO("Calling restart...");
         MySqlAppPtr app = this->create_mysql_app();
         app->restart();
-        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status.get_current_status_string());
+        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status->get_current_status_string());
         return JsonData::from_null();
     } else if (input.method_name == "start_mysql_with_conf_changes") {
         NOVA_LOG_INFO("Calling start with conf changes...");
@@ -272,16 +272,16 @@ JsonDataPtr MySqlAppMessageHandler::handle_message(const GuestInput & input) {
         int memory_mb = input.args->get_int("updated_memory_size");
         app->start_mysql_with_conf_changes(this->apt,
                                            memory_mb);
-        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status.get_current_status_string());
+        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status->get_current_status_string());
         return JsonData::from_null();
     } else if (input.method_name == "stop_mysql") {
         NOVA_LOG_INFO("Calling stop...");
         MySqlAppPtr app = this->create_mysql_app();
         app->stop_mysql();
-        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status.get_current_status_string());
+        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status->get_current_status_string());
         return JsonData::from_null();
     } else {
-        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status.get_current_status_string());
+        NOVA_LOG_INFO2("After handling the message whats the status? (%s)", status->get_current_status_string());
         return JsonDataPtr();
     }
 }
